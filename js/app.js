@@ -4,13 +4,17 @@ const taskList = document.getElementById("taskList");
 
 // create a function that adds a task to a list
 function addTask() {
-  // get what is typed into the input field
-  const inputTaskText = inputTask.value;
 
-  // check to see if there is an item stored in the browser's local storage
-  if (localStorage.getItem("myStoredListItemsString")) {
+  // get what is typed into the input field
+  const inputTaskText = inputTask.value.trim();
+// If the input field is empty, add the 'required' attribute
+  if (inputTaskText === "") {
+    inputTask.setAttribute("required", "true");
+    
+  }else if (localStorage.getItem("myStoredListItemsString")) {
     // if the item exists, it is parsed into a JSON object and stored in the 'items' variable
     let items = JSON.parse(localStorage.getItem("myStoredListItemsString"));
+
     // add a new item that was obtained from the input to the 'items' list
     items.push(inputTaskText);
     // store the updated 'items' into a string and save them back to local storage
