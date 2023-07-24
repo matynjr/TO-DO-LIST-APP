@@ -53,6 +53,8 @@ function addTask() {
   // clear input field after adding a task
   inputTask.value = "";
 }
+
+// Delete function
 // Attach a click event listener to the todo list
 taskList.addEventListener('click', function(event) {
   const clickedElement = event.target;
@@ -85,6 +87,8 @@ taskList.addEventListener('click', function(event) {
     }
   }
 });
+
+//editing a list item
 
 // Helper function to find the parent <li> element of a given element
 function findParentListItem(element) {
