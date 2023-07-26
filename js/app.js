@@ -46,6 +46,11 @@ function addTask() {
     deleteButton.innerHTML ="<box-icon type='solid' name='message-square-x' class='delete-btn'></box-icon>";
     listItem.appendChild(deleteButton);
 
+    //create edit button
+
+    const editButton = document.createElement("button")
+    editButton.innerHTML ="<box-icon type='solid' name='edit' class='edit-button'></box-icon>"
+    listItem.appendChild(editButton)
     //add the list item to the list
     taskList.appendChild(listItem);
   });
@@ -89,6 +94,71 @@ taskList.addEventListener('click', function(event) {
 });
 
 //editing a list item
+// Editing a list item
+taskList.addEventListener('click', function (event) {
+  const editClickedElement = event.target;
+  const listItemToEdit = findParentListItem(editClickedElement);
+
+  if (listItemToEdit && editClickedElement.classList.contains('edit-button')) {
+    // Get the current task text from the list item
+    const taskText = listItemToEdit.textContent.trim();
+
+    // Create an input field and set its value to the current task text
+    const editInput = document.createElement("input");
+    editInput.type = "text";
+    editInput.value = taskText;
+
+    // Replace the list item with the input field
+    listItemToEdit.innerHTML = "";
+    listItemToEdit.appendChild(editInput);
+    editInput.focus(); // Set focus to the input field for immediate editing
+
+    // Add an event listener to save the edited task on pressing Enter or losing focus
+    editInput.addEventListener("keyup", function (e) {
+      if (e.key === "Enter" || e.key === "Escape") {
+        saveEditedTask(listItemToEdit, editInput);
+      }
+    });
+
+    editInput.addEventListener("blur", function () {
+      saveEditedTask(listItemToEdit, editInput);
+    });
+  }
+});
+
+// Helper function to save the edited task and update the localStorage
+function saveEditedTask(listItem, editInput) {
+  const newTaskText = editInput.value.trim();
+
+  // If the edited task is empty, remove it from the list
+  if (newTaskText === "") {
+    taskList.removeChild(listItem);
+  } else {
+    // Save the edited task to localStorage
+    const retrievedItems = localStorage.getItem("myStoredListItemsString");
+    const itemsArray = JSON.parse(retrievedItems);
+    const oldTaskText = listItem.textContent.trim();
+    const index = itemsArray.indexOf(oldTaskText);
+
+    if (index !== -1) {
+      itemsArray[index] = newTaskText;
+      localStorage.setItem("myStoredListItemsString", JSON.stringify(itemsArray));
+    }
+
+    // Replace the input field with a regular list item displaying the edited task text
+    listItem.innerHTML = newTaskText;
+
+    // Recreate the delete button and edit button for the updated list item
+    const deleteButton = document.createElement("button");
+    deleteButton.innerHTML = "<box-icon type='solid' name='message-square-x' class='delete-btn'></box-icon>";
+    listItem.appendChild(deleteButton);
+
+    const editButton = document.createElement("button");
+    editButton.innerHTML = "<box-icon type='solid' name='edit' class='edit-button'></box-icon>";
+    listItem.appendChild(editButton);
+  }
+}
+//end edit option
 
 // Helper function to find the parent <li> element of a given element
 function findParentListItem(element) {
